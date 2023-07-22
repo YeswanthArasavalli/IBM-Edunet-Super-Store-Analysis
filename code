@@ -16,13 +16,6 @@ super.tail(2)
 
 super.shape
 
-#sup1 = super.drop(['Postal Code'], axis = 1)
-#sup1
-
-#sup1.info()
-
-#sup1.shape
-
 duplicates = super[super.duplicated()]
 duplicates
 
@@ -82,6 +75,13 @@ fig = px.bar(sales_by_subcategory,
              title='Sales Analysis by Sub-Category')
 fig.show()
 
+sales_by_subcategory = sup.groupby('Sub-Category')['Profit'].sum().reset_index()
+fig = px.bar(sales_by_subcategory,
+             x='Sub-Category',
+             y='Profit',
+             title='Profit Analysis by Sub-Category')
+fig.show()
+
 sup.corr()
 
 top_cities = sup.groupby("City")["Sales"].sum().nlargest(10)
@@ -126,6 +126,20 @@ fig.add_trace(go.Bar(x=sales_profit_by_segment['Segment'],
 
 fig.update_layout(title='Sales and Profit Analysis by Customer Segment',
                   xaxis_title='Customer Segment', yaxis_title='Amount')
+
+fig.show()
+
+sales_profit_by_segment = sup.groupby('Category').agg({'Sales': 'sum', 'Profit': 'sum'}).reset_index()
+fig = go.Figure()
+fig.add_trace(go.Bar(x=sales_profit_by_segment['Category'],
+                     y=sales_profit_by_segment['Sales'],
+                     name='Sales'))
+fig.add_trace(go.Bar(x=sales_profit_by_segment['Category'],
+                     y=sales_profit_by_segment['Profit'],
+                     name='Profit'))
+
+fig.update_layout(title='Sales and Profit Analysis by Category',
+                  xaxis_title='Category', yaxis_title='Amount')
 
 fig.show()
 
